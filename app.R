@@ -11,28 +11,22 @@ library(shiny)
 library(DBI)
 
 source("R/login_module.R")
-source("R/ppr_module.R")
-source("R/daft_module.R")
+source("R/data_module.R")
 # Define UI for application that draws a histogram
 ui <- fluidPage(
   tabsetPanel(
-    tabPanel("Login", loginUI("house")),
-    tabPanel("Daft", daftUI("daft")),
-    tabPanel("PPR", pprUI("ppr"))
-  ),
-  fluidRow(
-    verbatimTextOutput("conn")
+    tabPanel("Login", loginUI("moddb")),
+    tabPanel("Cars", dataUI("cars", "CARS")),
+    tabPanel("Iris", dataUI("iris", "IRIS"))
   )
 )
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {
-  housedb <- loginServer("house")
+  datadb <- loginServer("moddb")
   
-  pprServer("ppr", housedb)
-  daftServer("daft", housedb)
-  
-  output$conn <- renderPrint(loginServer("house")())
+  dataServer("cars", datadb, "modcars")
+  dataServer("iris", datadb, "modiris")
 }
 
 # Run the application 
